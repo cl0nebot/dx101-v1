@@ -1,0 +1,13 @@
+<%
+  show_type ||= false
+  show_actions ||= false
+%>
+<tr>
+  <td class="f-11"><%= fmt_date withdraw.created_at %></td>
+  <% if show_type %><td class="f-11">Withdraw</td><% end %>
+  <td class="f-11"><%= withdraw.amount.currency %> <%= withdraw.amount.round.format %></td>
+  <td class="f-11"><%= withdraw.fee.currency %> <%= withdraw.fee.round.format %></td>
+  <td class="f-11"><%= withdraw.address %></a>
+  <td class="f-11"><%= withdraw.status.to_s.capitalize %></td>
+  <% if show_actions %><td class="f-11"><% if withdraw.pending? or withdraw.processing? %><a href="<%= cancel_panel_wallet_path id: withdraw.id %>" confirm="Are you sure?">Cancel</a></td><% end %><% end %>
+</tr>

@@ -1,0 +1,6 @@
+<h1>Welcome to 101DX</h1>
+<p>
+  Thanks for signing up, please <a href="<%= verify_path email: @user.email.email, code: @code, only_path: false %>" class="excite-link">click here</a> to verify your email and complete your registration.<br><br>
+  If the link above does not work please copy and paste the url below into your browser.<br>
+</p>
+<div class="plain-strip p-10 f-11"><%= verify_path email: @user.email.email, code: @code, only_path: false %></div>

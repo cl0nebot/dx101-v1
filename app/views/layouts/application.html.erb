@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noodp">
+  <% if @description %><meta name="description" content="<%= @description %>"><% end %>
+  <% if @keywords %><meta name="keywords" content="<%= @keywords %>"><% end %>
+  <%= favicon_link_tag 'favicon.ico' %>
+  <title><%= @page_title || '101DX Digital Exchange' %></title>
+  <%= render 'shared/css' %>
+</head>
+<body>
+  <%= image_tag 'beta.png', class: 'beta show-for-medium-up' %>
+  <header class="pt-40 pb-40" style="overflow: hidden;">
+    <div class="row">
+      <div class="columns small-12 large-4 small-text-center large-text-left">
+        <%= link_to image_tag('logos/101dx_color.png', :alt => "101 Digital Exchange" ), root_path, title: "101 Digital Exchange" %>
+      </div>
+      <div class="columns small-12 large-5 pt-25 text-center">
+        <a href="<%= values_path %>" class="plain mr-20">Why 101?</a>        
+        <a href="<%= fees_path %>" class="plain mr-20">Our Fees</a>
+        <a href="<%= markets_path %>" class="plain mr-20">Market Data</a>
+      </div>
+      <div class="columns small-12 large-3 text-center large-text-right small-pt-25 large-pt-0">
+        <a href="<%= login_path %>" class="excite-link strong" data-reveal-id="loginModal" data-reveal>Login</a> <span class="light-text ml-10 mr-10">or</span>
+        <a href="<%= signup_path %>" class="button radius excite strong mb-0 mt-4" data-reveal-id="signupModal" data-reveal>Sign Up</a>
+      </div>
+    </div>
+  </header>
+  <%= yield %>
+  <footer class="dark-strip pt-40 pb-40 f-14 white-links whitey">
+    <div class="row">
+      <div class="columns small-12 large-6">
+        <div class="row">
+          <div class="columns small-4"><%= image_tag 'logos/101dx_icon_white.png', class: 'mt-15' %></div>
+          <div class="columns small-8">
+            <h3 class="whitey strong f-16">101 Digital Exchange</h3>
+            <p class="f-14 pr-10">101 Digital Exchange is owned and operated by 101 Group Ltd., based in Belize, Central America. Since 2005, we have been consulting globally on the intersection of technology and business.</p>
+            <p class="f-14">Copyright &copy; 2014 101 Group Ltd.<br>All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+      <div class="columns large-6 link-breather">
+        <div class="row">
+          <div class="columns large-3">
+            <h3 class="whitey strong f-16">Main</h3>
+            <a href="<%= signup_path %>" data-reveal-id="signupModal" data-reveal>Sign Up</a><br>
+            <a href="<%= login_path %>" data-reveal-id="loginModal" data-reveal>Login</a><br>
+            <a href="<%= fees_path %>">Fees</a><br>
+            <a href="<%= values_path %>">Our Values</a><br>
+            <hr>
+            <a href="<%= agents_path %>">Become an Agent</a><br>            
+          </div>
+          <div class="columns large-3">
+            <h3 class="whitey strong f-16">More</h3>
+            <a href="http://support.101.net/News/List">News</a><br>
+            <a href="http://support.101.net/Knowledgebase/List">Knowledgebase</a><br>
+            <a href="http://support.101.net/Tickets/Submit" target="_top">Contact Support</a><br>
+            <hr>
+            <a href="<%= markets_path %>">Market Data</a>
+          </div>
+          <div class="columns large-6">
+            <h3 class="whitey strong f-16">Get Social With Us</h3>
+            <a href="https://www.facebook.com/101digital" target="_blank" class="f-30 mr-3"><i class="fa fa-facebook-square"></i></a>
+            <a href="https://twitter.com/101dotnet" target="_blank" class="f-30 mr-3"><i class="fa fa-twitter-square"></i></a>
+            <a href="http://www.linkedin.com/company/101-digital-exchange" target="_blank" class="f-30 mr-3"><i class="fa fa-linkedin-square"></i></a>
+            <a href="https://plus.google.com/113605247805078724202" target="_blank" class="f-30 mr-3"><i class="fa fa-google-plus-square"></i></a>
+            <a href="http://www.youtube.com/101digitalexchange" target="_blank" class="f-30 mr-3"><i class="fa fa-youtube-square"></i></a>
+            <hr>
+            <p><%= image_tag 'truste-seal.png'%></p>
+            <a href="<%= privacy_path %>">Privacy Policy</a> / 
+            <a href="<%= terms_path %>">Terms of Use</a><br><br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <div id="signupModal" class="reveal-modal tiny" data-reveal>
+    <a class="close-reveal-modal">&#215;</a> 
+    <div class="row">
+      <div class="columns small-12">
+        <h2>Creating an account is quick, easy &amp; free.</h2>
+      </div>
+    </div>
+    <%= render 'users/signup_form' %> 
+  </div>
+  <div id="loginModal" class="reveal-modal tiny" data-reveal>
+    <a class="close-reveal-modal">&#215;</a> 
+    <div class="row">
+      <div class="columns small-12">
+        <h2>Login</h2>
+      </div>
+    </div>
+    <%= render 'users/login_form' %>
+  </div>
+  <%= render 'shared/js' %>
+</body>
+</html>

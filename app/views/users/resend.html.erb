@@ -1,0 +1,33 @@
+<div class="row collapse">
+  <div class="columns small-11 medium-8 box small-centered">
+    <header class="smooth-header round-top-5">
+      <div class="row">
+        <div class="columns small-12">
+          <h1 class="smooth-h1"><%= @current_user ? 'Email Sent' : 'Resend' %></h1>
+        </div>
+      </div>
+    </header>
+    <section>
+      <%= simple_flash %>
+      <div class="row pt-15 pb-15">
+        <div class="columns small-12">
+          <% if @current_user %>
+            <p class="lh-half">
+              We have resent the email verification.<br>
+              Check your email to complete the registration process.<br>
+              Look in the spam folder if you don't find our email in your inbox.<br><br>
+              <a href="<%= resend_path %>">Click here</a> and we'll send it again.
+            </p>
+          <% else %>
+            <p class="lh-half pb-15">
+              Please enter your email address below and we'll resend the email verification.
+            </p>
+            <%= form_for :resend do |f| %>
+              <%= f.email_field :email, placeholder: 'enter your email & press enter', class: 'huge-input' %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

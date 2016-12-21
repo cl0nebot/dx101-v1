@@ -1,0 +1,25 @@
+<%= form_for @address, url: (@address.new_record? ? :panel_wallet_addresses : panel_wallet_address_path(@address)) do |f| %>
+  <div class="row">
+    <div class="columns small-12">
+      <% if @address.new_record? %>
+        <%= f.label :currency, 'Address Type' %>
+        <%= f.select :currency, options_for_crypto_types(@crypto_type, false) %>
+      <% else %>
+        <h2><%= Finance.crypto_name_by_currency @address.currency %> Address <% if @address.label %><span class="f-14 ml-60">Label: <%= @address.label %></span><% end %></h2>
+        <span class="f-18 positive"><%= @address.address %></span><br>
+        <%= image_tag @address.qr_uri '300x300' %>
+      <% end %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="columns small-12 large-4">
+      <%= f.label :label, 'Label' %>
+      <%= f.text_field :label %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <%= f.submit (@address.new_record? ? 'Create' : 'Update'), class: 'button radius secondary mb-0' %>
+    </div>
+  </div>
+<% end %>

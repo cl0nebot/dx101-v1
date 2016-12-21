@@ -1,0 +1,144 @@
+<header class="dark-strip pt-30 pb-40">
+  <div class="row">
+    <div class="large-12 columns">
+      <h1 class="whitey">Exchange Fees</h1>
+      <h4 class="whitey">Great Base Rates, plus Membership Discounts</h4>
+    </div>
+  </div>
+</header>
+
+<section id="main-content">
+  <div class="row">
+    <div class="medium-10 columns push-2">
+
+      <a name="1"></a>
+      <p>&nbsp;</p>
+      <div data-alert class="alert-box warning round">
+        <center><h2 class="whitey">GREAT NEWS!</h2><p>During Beta, All Trading Fees are WAIVED!</p></center>
+      </div>
+      <p>&nbsp;</p>
+      <table>
+      <thead>
+        <tr>
+          <th width="150">Trade Type</th>
+          <th>Description</th>
+          <th width="150">Base Rate</th>
+          <th width="150">As Low As*</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>C-C</td>
+          <td>Buy CyptoCurrency with CryptoCurrency</td>
+          <td>0.25%</td>
+          <td>0.10%</td>
+        </tr>
+        <tr>
+          <td>C-F</td>
+          <td>Buy CyptoCurrency with Fiat</td>
+          <td>0.50%</td>
+          <td>0.20%</td>
+        </tr>
+        <tr>
+          <td>F-C</td>
+          <td>Buy Fiat with CryptoCurrency</td>
+          <td>0.50%</td>
+          <td>0.20%</td>
+        </tr>
+        <tr>
+          <td>C-M</td>
+          <td>Buy Membership Units with CryptoCurrency</td>
+          <td>FREE</td>
+          <td>FREE</td>
+        </tr>
+        <tr>
+          <td>M-C</td>
+          <td>Buy CryptoCurrency with Membership Units**</td>
+          <td>0.50%</td>
+          <td>0.20%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Note: 101DX operates without traditional pairs, so "Buy CryptoCurrency with Fiat" is functionally the same as "Sell Fiat for CryptoCurrency"</p>
+    <p>*To receive discounts, please see the Membership section below.<br/>
+    **Only Preferred Membership Units are tradeable, please see below.</p>
+
+    <a name="2"></a>
+    <h3>Deposit / Withdrawal Fees</h3>
+    <h2>Crypto Currencies</h2> 
+
+    <%= render "cryptofees" %>
+
+    <h2>Fiat Currencies</h2>
+    <p>Not accepted at this time. Varies by currency and deposit / withdrawal method</p>
+
+    <a name="3"></a>
+    <h3>Fee Currency and Rounding Policies</h3> 
+    <p>Fees are calculated in the source (selling) currency. For example, if you were selling USD for Dogecoin, the fee would be charged in USD. As the exchange runs without strict pairs, this same trade can also be expressed as buying Dogecoins with USD. </p>
+    <p>Crypto trading fees are calculated to the currency precision, rounded up. Fiat trading fees are calculated using the ISO 4217 minor unit exponent value, rounded up. In general this will mean fees are rounded to 8 decimal places for trading cryptocurrencies, and to 2 decimal places for fiat currencies. </p>
+
+    <a name="4"></a>
+    <h3>Membership</h3> 
+
+    <p>Exchange Members may receive significant discounts - up to 60% - on trading fees with no volume requirements or limits.  To receive this benefit, simply purchase Membership Units from within your Membership page [free registration required]. You can receive a 20% trading fee discount for as little as 0.05 XBT.  Membership Units are priced at 0.01 XBT.</p>
+
+    <h5>Trade Discount Tiers</h5>
+    <table>
+      <thead>
+        <tr>
+          <th>Membership Units</th>
+          <th>Discount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>5</td>
+          <td>20%</td>
+        </tr>
+        <tr>
+          <td>50</td>
+          <td>40%</td>
+        </tr>
+        <tr>
+          <td>100</td>
+          <td>50%</td>
+        </tr>
+        <tr>
+          <td>250</td>
+          <td>60%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Preferred Membership</h3> 
+    <p>The first 150,000 Membership Units purchased from the Exchange are designated as Preferred Membership Units (PMUs), and have special 
+    features which could make them more valuable over time.
+      <ul>
+        <li><b>Tradeability</b> - PMU owners may buy or sell units within the 101DX interface. </li>
+        <li><b>Profit Sharing</b> - When the Exchange declares dividends to its shareholders, 10% of that dividend will be distributed pro-rata to holders of Preferred Membership Units.</li>
+      </ul>
+    </p>
+    <p>After the initial PMUs are purchased by our members, the cost of preferred units will vary according to supply and demand.
+    The exchange will still sell membership units at a fixed 0.01 XBT per unit, however these units (Standard Membership Units, or SMUs) 
+    will simply entitle members to the discount schedule above. Full details are available in the <a href="http://support.101.net/Knowledgebase/Article/View/5/5/what-are-membership-units" target="_blank">Knowledge Base</a>.</p>
+  </div>
+  <div class="large-2 medium-2 columns pull-10">
+    <ul class="side-nav">
+     <li class="active"><a href="#1">Trading Fees</a></li>
+     <li class="divider"></li>
+     <li><a href="#2">Deposit / Withdrawal Fees</a></li>
+     <li class="divider"></li>
+     <li><a href="#3">Currency and Rounding</a></li>
+     <li class="divider"></li>
+     <li><a href="#4">Membership and Trading Discounts</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="pt-60 pb-60">
+        <div class="row">
+          <div class="columns small-12 text-center f-28 strong">
+            Like what you see? <a href="<%= signup_path %>" class="button radius excite strong mb-0 ml-20 f-28" data-reveal-id="signupModal" data-reveal>Get Started</a>
+          </div>
+        </div>
+</section>

@@ -1,0 +1,13 @@
+<%
+  show_type ||= false
+  show_actions ||= false
+%>
+<tr>
+  <td class="f-11"><%= fmt_date deposit.created_at %></td>
+  <% if show_type %><td class="f-11">Deposit</td><% end %>
+  <td class="f-11"><%= deposit.amount.currency %> <%= deposit.amount.round.format %></td>
+  <td class="f-11"><%= deposit.amount.currency %> <%= "0".to_money(deposit.currency).format %></td>
+  <td class="f-11"><a href="<%= panel_wallet_address_path deposit.crypto_address %>"><%= deposit.crypto_address.address %></td></a>
+  <td class="f-11"><%= deposit.status.to_s.capitalize %></td>
+  <% if show_actions %><td class="f-11"></td><% end %>
+</tr>

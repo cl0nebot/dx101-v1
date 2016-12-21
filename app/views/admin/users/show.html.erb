@@ -1,0 +1,43 @@
+<header>
+  <div class="row">
+    <div class="columns small-12">
+      <h1><%= @user.full_name %></h1>
+      <span class="lh-25">
+        <%= @user.email.email %><br>
+        Country: N/A
+      </span>
+    </div>
+  </div>
+</header>
+<section class="pt-30">
+  <div class="row">
+    <div class="columns small-12">
+      <a href="#" class="button radius right" data-reveal-id="add_funds">Add Funds</a>
+      <h2>Account Balances</h2>
+      <% @user.balance.each do |k,v| %>
+        <div class="border-down pb-10 pt-10">
+          <%= v.format %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<div id="add_funds" class="reveal-modal small" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
+  <%= form_for [:admin, @user], url: add_funds_admin_user_path do |f| %>
+    <%= fields_for :funds do |ff| %>
+      <%
+        options = []
+        Finance.currencies.each do |c|
+          options << [c.to_s,c.to_s] unless c == :xbt
+        end
+      %>
+      <%= ff.label :currency %>
+      <%= ff.select :currency, options_for_select(options, 'USD') %>
+      <%= ff.label :amount %>
+      <%= ff.text_field :amount, autocomplete: 'off' %>
+      <%= ff.submit 'Add', class: 'button radius' %>
+    <% end %>
+  <% end %>
+</div>

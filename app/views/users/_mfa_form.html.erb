@@ -1,0 +1,28 @@
+<div class="row pt-15">
+  <div class="columns small-12">
+    <% if session[:mfa_setup] %>
+      Scan this QR code into google authenticator on your mobile device.<br><br>
+      <strong>**You must do this now or you will be locked out of your account!</strong>
+      <img src="<%= @current_user.google_mfa_qr_uri %>"><br><br>
+    <% else %>
+      <p>Check your mobile device.</p>
+    <% end %>
+    <%= form_for :mfa do |f| %>
+      <%= f.text_field :code, placeholder: 'enter your code & press enter', class: 'huge-input', autocomplete: 'off' %><br>
+      <%= f.submit 'Submit', class: 'button radius excite strong' %>
+    <% end %>
+  </div>
+</div>
+<% if session[:mfa_setup] %>
+  <div class="row pb-15">
+    <div class="columns small-12 text-right">
+      <a href="<%= disable_mfa_panel_account_path %>">Cancel, I don't want google authenticator.</a>
+    </div>
+  </div>
+<% else %>
+  <div class="row pb-15">
+    <div class="columns small-12 text-right">
+      <a href="<%= logout_path %>">Wrong account? Log me out</a>
+    </div>
+  </div>
+<% end %>

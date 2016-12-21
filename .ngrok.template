@@ -1,0 +1,8 @@
+inspect_addr: disabled
+auth_token: token
+tunnels:
+  dev:
+    hostname: user.101.net
+    proto:
+      http: "3000"
+      https: "3000"

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style type="text/css">
+      html,body{
+        padding: 0;
+        margin: 0;
+        font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+      }
+      #header{
+        padding: 30px;
+        background-color: #084165;
+        color: #FFFFFF;
+      }
+      #header img{
+        display: block;
+        height: 50px;
+      }
+      #content{
+        width: 540px;
+        padding: 30px;
+      }
+      a.excite-link{
+        color: #f25d07;
+      }
+      a:hover.excite-link,
+      a:focus.excite-link{
+        color: #ff5d00;
+      }
+      .plain-strip{
+        background-color: #F2F2F2;
+      }
+      .p-10{
+        padding: 10px;
+      }
+      .f-11{
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <header id="header">
+      <%= image_tag 'logos/101dx_white.png', alt: '101DX Logo', only_path: false %>
+    </header>
+    <div id="content">
+      <%= yield %>
+    </div>
+  </body>
+</html>
+

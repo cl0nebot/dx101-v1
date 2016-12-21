@@ -1,0 +1,60 @@
+<% content_for :js do %>
+  <%= javascript_include_tag 'admin/withdraws' %>
+<% end %>
+<h2>Withdraws</h2>
+
+<%= form_tag :batch_admin_withdraws, class: 'withdraw-form' do %>
+  <%= hidden_field_tag :ids %>
+  <table>
+    <thead>
+      <tr>
+        <th><input type="checkbox" style="margin: 0px;" class="check-all"></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Account Age</th>
+        <th>Amount</th>
+        <th>Address</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if @grouped_withdraws.blank? %>
+        <tr>
+          <td colspan="9">No withdraws pending or processing</td>
+        </tr>
+      <% else %>
+        <% @grouped_withdraws.each do |currency, group| %>
+          <tr>
+            <td colspan="9" class="sectional"><input type="checkbox" class="left check-section" currency="<%= currency %>" style="margin: 0px;"> Withdraws for <%= Finance.crypto_name_by_currency currency %></td>
+          </tr>
+          <% group.each do |w| %>
+            <tr>
+              <td><input type="checkbox" class="withdraw-checkbox" value="<%= w.id %>" currency="<%= w.currency %>" style="margin: 0px;"></td>
+              <td><%= w.user.first_name %> <%= w.user.last_name %></td>
+              <td><a href="<%= admin_user_path w.user %>"><%= w.user.email.email %></a></td>
+              <td><%= timeago w.user.created_at %></td>
+              <td><%= w.currency %> <%= w.amount.round %></td>
+              <td>
+                <% if w.currency == 'XBT' %>
+                  <a href="http://<%= 't' unless Rails.env.production? %>btc.blockr.io/address/info/<%= w.address %>" target="_blank"><%= w.address %></a>
+                <% elsif ['LTC','DGC','QRK','PPC','MEC'].include?(w.currency) and Rails.env.production? %>
+                  <a href="http://<%= w.currency.downcase %>.blockr.io/address/info/<%= w.address %>" target="_blank"><%= w.address %></a>
+                <% else %>
+                  <%= w.address %>
+                <% end %>
+              </td>
+              <td><%= w.status.to_s.capitalize %></td>
+              <td><%= timeago w.created_at %></td>
+              <td><a href="<%= cancel_admin_withdraw_path w %>" confirm="Are you sure?">Cancel</a></td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+  <% unless @grouped_withdraws.blank? %>
+    <a href="#" class="submit button radius excite">Pay Now</a>
+  <% end %>
+<% end %>

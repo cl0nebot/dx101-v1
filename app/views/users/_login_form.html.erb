@@ -1,0 +1,17 @@
+<div class="row pt-15">
+  <div class="columns small-12">
+    <%= form_for :login, url: login_path do |f| %>
+      <%= f.email_field :email, placeholder: 'enter your email', class: 'huge-input', autocomplete: 'off' %>
+      <%= f.password_field :password, placeholder: 'enter your password', class: 'huge-input', autocomplete: 'off' %>
+      <% if session[:failed_login_attempts] and session[:failed_login_attempts] >= 3 %>
+        <div class="mb-15"><%= recaptcha_tags ssl: true, display: {theme: 'clean'} %></div>
+      <% end %>
+      <%= f.submit 'Login', class: 'button radius excite strong' %>
+    <% end %>
+  </div>
+</div>
+<div class="row pb-15">
+  <div class="columns small-12 text-right">
+    <a href="<%= signup_path %>">I need an account</a> &nbsp; &ndash; &nbsp; <a href="<%= recover_path %>">I forgot my password</a>
+  </div>
+</div>

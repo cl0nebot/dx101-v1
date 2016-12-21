@@ -1,0 +1,26 @@
+<div class="row collapse">
+  <div class="columns small-11 medium-8 box small-centered">
+    <header class="smooth-header round-top-5">
+      <div class="row">
+        <div class="columns small-12 medium-4">
+          <h1 class="smooth-h1">Thanks</h1>
+        </div>
+        <div class="columns medium-8 show-for-large-up">
+          <p class="smooth-text pt-5 pl-15 mb-0">You're almost finished</p>
+        </div>
+      </div>
+    </header>
+    <section>
+      <%= simple_flash %>
+      <div class="row pt-15 pb-15">
+        <div class="columns small-12">
+          <p class="lh-half">
+            Check your email to complete the registration process.<br>
+            Look in the spam folder if you don't find our email in your inbox.<br><br>
+            <a href="<%= resend_path %>">Click here</a> and we'll send it again.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,160 @@
+<% 
+  md = @market_data[@rate_currency.to_sym][@quantity_currency.to_sym] 
+%>
+<% content_for :js do %>
+  <%= javascript_include_tag 'pages/markets' %>
+  <script type="text/json" id="chart_data" quantity_currency="<%= @quantity_currency.to_s.upcase %>" rate_currency="<%= @rate_currency.to_s.upcase %>">
+  <%= md[:chart].map{|d| [d[:date].to_f * 1000, (d[:open] ? d[:open].round.to_f : nil), (d[:high] ? d[:high].round.to_f : nil), (d[:low] ? d[:low].round.to_f : nil), (d[:close] ? d[:close].round.to_f : nil), (d[:volume] ? d[:volume].round.to_f : 0)]}.to_json %>
+  </script>
+<% end %>
+
+<div class="row pb-30">
+  <div class="columns small-4">
+    <div class="accordion markets-accordion" style="background-color: #F2F2F2;">
+      <% Finance.crypto_currencies.each do |c| %>
+        <div class="group <%= 'active' if c == @rate_currency.to_sym %>">
+          <h3><%= Finance.crypto_name_by_currency c %></h3>
+          <div>
+            <% Finance.crypto_currencies.each do |cc| %>
+              <% if c != cc %>
+                <%
+                  d = @market_data[c][cc]
+                %>
+                <a href="<%= markets_path quantity_currency: cc.to_s, rate_currency: c.to_s %>" class="white-strip plain block pt-14 pb-15 mb-3 f-11 tip-right" data-tooltip title="24 Hour Volume - <%= cc.to_s.upcase %> <%= d[:volume].round %>">
+                  <div class="row">
+                    <div class="columns small-4"><i class="fa <%= (@quantity_currency == cc.to_s and @rate_currency == c.to_s) ? 'fa-eye' : 'fa-eye-slash' %> mr-10" style="<%= 'opacity: .25' unless @quantity_currency == cc.to_s and @rate_currency == c.to_s %>"></i><%= cc.to_s.upcase %></div>
+                    <div class="columns small-5"><% if d[:last] and d[:last] > 0 %><%= d[:last].round %><% else %>n/a<% end %></div>
+                    <div class="columns small-3"><span class="<%= 'positive' if d[:change] and d[:change] > 0 %><%= 'negative' if d[:change] and d[:change] < 0 %>"><%= '+' if d[:change] and d[:change] > 0 %><%= number_with_precision(d[:change].to_f.round, precision: 2) %>%</span></div>
+                  </div>
+                </a>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="columns small-8">
+    <h1 class="medium-strip f-12 strong whitey m-0 p-15">Market data for <%= @quantity_currency.to_s.upcase %>/<%= @rate_currency.to_s.upcase %> <span style="opacity: .5">(<%= Finance.crypto_name_by_currency @quantity_currency %>/<%= Finance.crypto_name_by_currency @rate_currency %>)</span></h1>
+    <div class="row text-center pt-15 f-14">
+      <div class="columns small-12 lh-24">
+        <div class="row text-center">
+          <div class="columns small-3 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+            LAST PRICE<br>
+            <strong><% if md[:last] %><%= @rate_currency.to_s.upcase %> <%= md[:last].round %><% else %>N/A<% end %></strong><br>
+          </div>
+          <div class="columns small-3 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+            24 HR HIGH<br>
+            <strong><% if md[:high] %><%= @rate_currency.to_s.upcase %> <%= md[:high].round %><% else %>N/A<% end %></strong><br>
+          </div>
+          <div class="columns small-3 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+            24 HR LOW<br>
+            <strong><% if md[:low] %><%= @rate_currency.to_s.upcase %> <%= md[:low].round %><% else %>N/A<% end %></strong><br>
+          </div>
+          <div class="columns small-3 pt-3 pb-3">
+            24 HR VOLUME<br>
+            <strong><%= @quantity_currency.to_s.upcase %> <%= md[:volume].round %></strong><br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center pt-15 pb-15">
+      <div class="columns small-12">
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-6">
+        <h2 class="f-14">Bids</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @bids.blank? %>
+            <tr>
+              <td class="f-11" colspan="2">No bids</td>
+            </tr>
+          <% else %>
+            <% @bids.each do |b| %>
+              <% 
+                total = b.rate * b.quantity_required.amount
+              %>
+              <tr>
+                <td class="f-11"><%= b.rate.round.format %></td>
+                <td class="f-11"><%= b.quantity_required.round.format %></td>
+                <td class="f-11"><%= total.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="columns small-6">
+        <h2 class="f-14">Asks</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @asks.blank? %>
+            <tr>
+              <td class="f-11" colspan="2">No asks</td>
+            </tr>
+          <% else %>
+            <% @asks.each do |a| %>
+              <% 
+                total = a.rate * a.quantity_required.amount
+              %>
+              <tr>
+                <td class="f-11"><%= a.rate.round.format %></td>
+                <td class="f-11"><%= a.quantity_required.round.format %></td>
+                <td class="f-11"><%= total.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="columns small-12">
+        <h2 class="f-14">Trade History</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">When</th>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @trades.blank? %>
+            <tr>
+              <td class="f-11" colspan="3">No trades</td>
+            </tr>
+          <% else %>
+            <% @trades.each do |t| %>
+              <tr>
+                <td class="f-11"><%= timeago t.created_at %></td>
+                <td class="f-11"><%= t.rate.round.format %></td>
+                <td class="f-11"><%= t.quantity.round.format %></td>
+                <td class="f-11"><%= t.price.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<header>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Users</h1>
+    </div>
+  </div>
+</header>
+<section class="pt-30">
+  <% @users.each do |u| %>
+    <div class="row pt-10 pb-10" style="border-bottom: 1px solid #CCCCCC;">
+      <div class="columns small-12">
+        <a href="<%= admin_user_path u %>">
+          <%= u.name %><br>
+          <%= u.email.email %>
+        </a>
+      </div>
+    </div>
+  <% end %>
+</section>

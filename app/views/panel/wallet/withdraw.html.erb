@@ -1,0 +1,66 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_wallet_path %>">Transfer</a></li>
+      <li><a href="<%= withdraw_panel_wallet_path %>" class="active">Withdraw</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Withdraw</h1>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15">
+        <div class="row">
+          <div class="columns small-6">
+            <%
+              options_for_balance_withdraw = []
+              Finance.crypto_currencies.each do |c|
+                if @balance_currencies.include? c or @balance[c] > 0
+                  options_for_balance_withdraw << ["#{@balance[c].currency} #{@balance[c].round.format}", c.to_s.downcase]
+                end
+              end
+            %>
+            <%= form_for @withdraw, url: :withdraw_panel_wallet do |f| %>
+              <%= f.label :currency, 'From Balance' %><br>
+              <%= f.select :currency, options_for_select(options_for_balance_withdraw, (@withdraw.currency ? @withdraw.currency.downcase : nil)) %><br>
+              <%= f.label :amount %><br>
+              <%= f.text_field :amount %><br>
+              <%= f.label :address, 'To Address' %><br>
+              <%= f.text_field :address %><br>
+              <%= f.submit 'Submit', class: 'button radius secondary mb-0' %><br>
+            <% end %>
+          </div>
+          <div class="columns small-6">
+            <table style="width: 100%;" class="mb-0">
+              <thead>
+                <tr>
+                  <th class="f-12">Currency</th>
+                  <th class="f-12">Minimum Withdraw</th>
+                  <th class="f-12">Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% Finance.crypto_currencies.each do |c| %>
+                  <% if @balance_currencies.include? c or @balance[c] > 0 %>
+                    <tr>
+                      <td class="f-11"><%= c.to_s.upcase %></td>
+                      <td class="f-11"><%= ENV["#{c.to_s}_withdraw_min"].to_money c %></td>
+                      <td class="f-11"><%= ENV["#{c.to_s}_withdraw_fee"].to_money c %></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

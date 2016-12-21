@@ -1,0 +1,21 @@
+<div class="row pt-15">
+  <div class="columns small-12">
+    <%
+      u = User.new
+      u.email_addresses.new
+    %>
+    <%= form_for u, url: :signup do |f| %>
+      <%= f.fields_for :email_addresses do |ff| %>
+        <%= ff.email_field :email, placeholder: 'enter your email & press enter', class: 'huge-input', autocomplete: 'off' %><br>
+        <%= image_tag 'consumer-seal.jpg'%>
+        <%= ff.submit 'Sign Up', class: 'button radius excite strong' %>
+        
+      <% end %>
+    <% end %>
+  </div>
+</div>
+<div class="row pb-15">
+  <div class="columns small-12 text-right">
+    <a href="<%= login_path %>">I already have an account.</a>
+  </div>
+</div>

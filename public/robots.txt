@@ -1,0 +1,4 @@
+User-Agent: *
+Disallow: /panel/
+
+Sitemap: https://www.101.net/sitemap.xml

@@ -1,0 +1,24 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_trades_path %>">Trade</a></li>
+      <li><a href="<%= history_panel_trades_path %>" class="active">History</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Trade History</h1>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15">
+        <%= render 'list', trades: @trades %>
+      </div>
+    </div>
+  </div>
+</section>

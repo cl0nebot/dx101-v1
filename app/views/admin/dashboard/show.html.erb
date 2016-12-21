@@ -1,0 +1,116 @@
+<h2>Coin Servers</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Currency</th>
+			<th>Balance</th>
+      <th>Version</th>
+      <th>Protocol Version</th>
+      <th>Wallet Version</th>
+      <th>Blocks</th>
+      <th>Time Offset</th>
+      <th>Connections</th>
+      <th>Proxy</th>
+      <th>Difficulty</th>
+      <th>Testnet</th>
+      <th>Oldest Key Pool</th>
+      <th>Key Pool Size</th>
+      <th>TX Fee</th>
+      <th>Errors</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+    <% @coin_servers.each do |k,s| %>
+      <% if s['status'] == 'DOWN' %>
+        <tr>
+          <td class="down"><%= s['currency'] %></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"></td>
+          <td class="down"><span style="font-weight: bold; color: red;"><%= s['status'] %></span></td>
+        </tr>
+      <% else %>
+        <tr>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['currency'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['balance'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['version'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['protocolversion'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['walletversion'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['blocks'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['timeoffset'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['connections'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['proxy'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['difficulty'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['testnet'] ? 'Yes' : 'No' %></td> 
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['keypoololdest'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['keypoolsize'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['paytxfee'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['errors'] %></td>
+          <td class="<%= 'highlight' unless s['errors'].blank? %>"><%= s['status'] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+	</tbody>
+</table>
+
+<h2>Transactions With No Addresses</h2>
+<table>
+  <thead>
+    <th>Currency</th>
+    <th>Transaction ID</th>
+  </thead>
+  <tbody>
+    <% if @badtx.blank? %>
+      <tr>
+        <td colspan="2">No bad transactions!</td>
+      </tr>
+    <% else %>
+      <% @badtx.each do |t| %>
+        <tr>
+          <td><%= t['currency'].upcase %></td>
+          <td><%= t['txid'] %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Malleable &amp; Unconfirmed Deposits</h2>
+<table>
+  <thead>
+    <th>User</th>
+    <th>Address</th>
+    <th>Transaction ID</th>
+    <th>Amount</th>
+    <th>Status</th>
+  </thead>
+  <tbody>
+    <% if @baddeposits.blank? %>
+      <tr>
+        <td colspan="5">No bad deposits!</td>
+      </tr>
+    <% else %>
+      <% @baddeposits.each do |d| %>
+        <tr>
+          <td><a href="<%= admin_user_path d.user %>"><%= d.user.email.email %></a></td>
+          <td><%= d.address %></td>
+          <td><%= d.txid %></td>
+          <td><%= d.amount.round %></td>
+          <td><%= d.status.to_s.capitalize %></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

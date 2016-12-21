@@ -1,0 +1,33 @@
+<header>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Finance Report</h1>
+    </div>
+  </div>
+</header>
+<section class="pt-30 pb-20">
+  <div class="row pt-10 pb-10">
+    <div class="columns small-12 lh-half">
+
+      <h2>Asset Holdings (our liability to users)</h2>
+      <% @asset_holdings_balance.each do |k,v| %>
+        <div class="border-down pb-10 pt-10">
+          <%= v.format %>
+        </div>
+      <% end %>
+      <br><br>
+
+      <h2>Transaction Sales Revenue</h2>
+      <% @trans_revenue_balance.each do |k,v| %>
+        <div class="border-down pb-10 pt-10">
+          <%= v.format %>
+        </div>
+      <% end %>
+      <br><br>
+
+      <h2>Expenses</h2>
+      TBD
+
+    </div>
+  </div>
+</section>

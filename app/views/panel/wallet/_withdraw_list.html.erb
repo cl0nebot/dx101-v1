@@ -1,0 +1,33 @@
+<%
+  remove_table_footer ||= false
+%>
+<table class="mb-0" style="width: 100%;">
+  <thead>
+    <th class="f-12">When</th>
+    <th class="f-12">Amount</th>
+    <th class="f-12">Fee</th>
+    <th class="f-12">Address</th>
+    <th class="f-12">Status</th>
+  </thead>
+  <tbody>
+    <% if @withdraws.blank? %>
+      <tr>
+        <td class="f-11" colspan="5">You currently have no withdraws.</td>
+      </tr>
+    <% else %>
+      <% @withdraws.each do |w| %>
+        <%= render 'panel/wallet/withdraw_item', withdraw: w %>
+      <% end %>
+    <% end %>
+  </tbody>
+  <% unless remove_table_footer %>
+    <tfooter>
+      <tr>
+        <td colspan="5" class="text-right" style="border-top: 1px solid #F5F5F5;">
+          <a href="<%= withdraw_panel_wallet_path %>" class="button radius secondary f-14 mb-0">Withdraw</a>
+        </td>
+      </tr>
+    </tfooter>
+  <% end %>
+</table>
+

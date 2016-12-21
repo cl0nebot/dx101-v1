@@ -1,0 +1,54 @@
+<% content_for :js do %>
+  <script type="text/javascript">
+    $(function(){
+      $('#user_birth_date').datepicker({
+        changeMonth: !!1,
+        changeYear: !!1,
+        maxDate: new Date(<%=18.years.ago.to_i * 1000%>),
+        minDate: new Date(<%=100.years.ago.to_i * 1000%>),
+        yearRange: '<%=100.years.ago.year%>:<%=18.years.ago.year%>',
+        defaultDate: new Date(<%=30.years.ago.to_i * 1000%>) 
+      });
+    });
+  </script>
+<% end %>
+<div class="row collapse pb-40">
+  <div class="columns small-11 medium-8 box small-centered">
+    <header class="smooth-header round-top-5">
+      <div class="row">
+        <div class="columns small-12">
+          <h1 class="smooth-h1">Finishing Up</h1>
+        </div>
+      </div>
+    </header>
+    <section>
+      <%= simple_flash %>
+      <div class="row pt-15">
+        <div class="columns small-12">
+          <%= form_for @current_user, url: :continue do |f| %>
+            <h2>Setting up your profile</h2>
+            <%= f.text_field :first_name, placeholder: 'enter your first name', autocomplete: 'off' %>
+            <%= f.text_field :last_name, placeholder: 'enter your last name', autocomplete: 'off', style: 'margin-bottom: 1.5rem;' %>
+            <%= f.password_field :password, placeholder: 'enter your password', autocomplete: 'off' %>
+            <%= f.password_field :password_confirmation, placeholder: 'retype your password', autocomplete: 'off' %>
+            <h2>Your Birth Date (must be 18)</h2>
+            <%= f.text_field :birth_date, placeholder: 'mm/dd/yyyy', value: ("#{sprintf('%02d', @current_user.birth_date.month)}/#{sprintf('%02d', @current_user.birth_date.day)}/#{@current_user.birth_date.year}" if @current_user.birth_date), autocomplete: 'off' %>
+            <h2>Your Citizenship</h2>
+            <%= f.country_select :country_citizenship, ['US', 'CA'], iso_codes: true %>
+            <h2>Your Residence (where you live)</h2>
+            <%= f.country_select :country_residence, ['US', 'CA'], iso_codes: true %><br><br>
+            <%= f.check_box :tos_agreed_at %> <%= f.label :tos_agreed_at, raw('I agree to the <a href="#" data-reveal data-reveal-id="tos_dialog">terms & conditions</a> of this website.') %>
+            <%= f.submit :submit, value: 'Submit', class: 'button radius excite right', style: 'margin-top: -15px;' %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<div id="tos_dialog" class="reveal-modal small" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
+  <h1>Terms</h1>
+  <div style="overflow-y: auto; height: 400px;" class="p15">
+    <%= render 'pages/tos' %>
+  </div>
+</div>

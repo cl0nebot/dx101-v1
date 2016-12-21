@@ -1,0 +1,88 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_trades_path %>">Trade</a></li>
+      <li><a href="<%= history_panel_trades_path %>">History</a></li>
+      <li><a href="<%= panel_trade_path @trade %>" class="active">Details</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Trade ID: #<%= @trade.id %></h1>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15 mb-15">
+        <h2>Overview</h2>
+        <div class="row">
+          <div class="columns small-12 medium-8 large-6">
+            <dl>
+              <dt class="small-4 left">Transfer Type</dt>
+              <dd class="small-8 left"><%= @trade.transfer_type.to_s.capitalize %></dd>
+              <dt class="small-4 left">Trade Type</dt>
+              <dd class="small-8 left"><%= @trade.trade_type_for_display %></dd>
+              <dt class="small-4 left">Quantity</dt>
+              <dd class="small-8 left"><%= @trade.quantity_currency %> <%= @trade.quantity %></dd>
+              <dt class="small-4 left">Quantity Filled</dt>
+              <dd class="small-8 left"><%= @trade.quantity_currency %> <%= @trade.quantity_filled %></dd>
+              <% if @trade.lmt_like? %>
+                <dt class="small-4 left">Limit Amount</dt>
+                <dd class="small-8 left"><%= @trade.rate_currency %> <%= @trade.rate %></dd>
+              <% end %>
+              <% if @trade.stop_like? %>
+                <dt class="small-4 left">Stop Amount</dt>
+                <dd class="small-8 left"><%= @trade.rate_currency %> <%= @trade.stop_rate %></dd>
+              <% end %>
+              <dt class="small-4 left">Status</dt>
+              <dd class="small-8 left"><%= @trade.status_for_display %></dd>
+              <dt class="small-4 left">Created</dt>
+              <dd class="small-8 left"><%= timeago @trade.created_at %></dd>
+            </dl>
+          </div>
+        </div>
+        <% if @trade.stop_like? and @trade.pending? %>
+          <p>Please be sure to keep enough funds in your account to complete this trade.<br>If your trade is activated and there are insufficient funds it will automatically be de-activated and you may miss your stop window.</p>
+        <% elsif @trade.pending_funds? %>
+          <p>This trade has been de-activated due to insufficient funds.<br>Please add funds to re-activate and complete this trade.</p>
+        <% end %>
+      </div>
+      <div class="boxy p-15">
+        <h2>Trade Transactions</h2>
+        <table class="mb-0" style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">When</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Price</th>
+              <th class="f-12">Total</th>
+              <th class="f-12">Fee</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @transactions.blank? %>
+              <tr>
+                <td class="f-11" colspan="5">This trade currently has no transactions.</td>
+              </tr>
+            <% else %>
+              <% @transactions.each do |t| %>
+                <tr>
+                  <td class="f-11"><%= fmt_date t.created_at %></td>
+                  <td class="f-11"><%= t.quantity_currency %> <%= t.quantity %></td>
+                  <td class="f-11"><%= t.rate_currency %> <%= t.rate %></td>
+                  <% 
+                    fee = @trade == t.source ? t.source_fee : t.target_fee
+                  %>
+                  <td class="f-11"><%= t.rate_currency %> <%= t.price %></td>
+                  <td class="f-11"><%= fee.currency %> <%= fee %></td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

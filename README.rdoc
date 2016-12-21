@@ -1,0 +1,39 @@
+Adding a new coin :(
+1.) Add coin server variables to .env
+2.) Add currency information with a priority of 300 to money initializers file
+3.) Add library and incorporate into CryptoTransactor service
+
+* Ruby version
+2.1
+
+* System dependencies
+imagemagick
+mysql
+rvm
+ngrok
+redis db
+
+* Configuration
+Copy and configure the following:
+.rvmrc.template > .rvmrc
+.ngrok.template > .ngrok
+.env.template > .env
+Procfile.template > Procfile
+config/database.yml.template > config/database.yml
+
+* Database
+
+These directions will change after beta is ready
+
+rake db:create
+rake db:migrate
+rake db:seed
+
+During development Larron will tell you to redo everything, here's how:
+Close the rails server and anything else connected to the database (gui's etc..)
+
+After doing a git pull --rebase, run:
+rake db:drop
+rake db:create
+rake db:migrate
+rake db:seed

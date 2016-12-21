@@ -1,0 +1,101 @@
+<header class="pt-20">
+  <div class="row">
+    <div class="columns small-12 medium-6">
+      <h1>My Account</h1>
+    </div>
+    <div class="columns small-12 medium-6 text-right">
+      <a href="#" class="button radius secondary mb-0" data-reveal data-reveal-id="change_password">Change Password</a>
+    </div>
+  </div>
+</header>
+
+<section class="pb-20">
+  <div class="row">
+    <div class="columns small-12">
+       <div class="boxy p-15 lh-20 mb-15">
+        <div data-alert="" class="alert-box radius">
+          Limited Functionality Ahead!
+        </div>
+        <p>You will not have to supply ID to trade cryptocurrencies.</p>
+        <p>Coming Soon:
+        <ul>
+          <li>Identity verification for Fiat trading</li>
+          <li>Account recovery options</li>
+          <li>Two Factor Authentication (requires account recovery)</li>
+          <li>TOS Acceptance: Version and Date</li>
+          <li>Policitally Exposed Person check</li>
+        </ul></p>
+      </div>
+      <div class="boxy p-15 lh-20 mb-15">
+        <%= form_for @current_user, url: :panel_account do |f| %>
+          <div class="row">
+            <div class="columns small-12 large-6">
+              <h2>Your First Name</h2>
+              <div class="row">
+                <div class="columns small-12">
+                  <%= f.text_field :first_name, placeholder: 'first name', autocomplete: 'off' %>
+                </div>
+              </div>
+            </div>
+            <div class="columns small-12 large-6">
+              <h2>Your Last Name</h2>
+              <div class="row">
+                <div class="columns small-12">
+                  <%= f.text_field :last_name, placeholder: 'last name', autocomplete: 'off' %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="columns small-12 large-6">
+              <h2>Your Citizenship</h2>
+              <div class="row">
+                <div class="columns small-12">
+                  <%= f.country_select :country_citizenship, ['US', 'CA'], iso_codes: true %>
+                </div>
+              </div>
+            </div>
+            <div class="columns small-12 large-6">
+              <h2>Your Residency (where do you live?)</h2>
+              <div class="row">
+                <div class="columns small-12">
+                  <%= f.country_select :country_residence, ['US', 'CA'], iso_codes: true %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%= f.submit :submit, value: 'Update', class: 'button radius secondary mb-0' %>
+        <% end %>
+      </div>
+      <div class="boxy p-15 lh-20 mb-15">
+        <h2>Email Addresses</h2>
+        <%= @current_user.email.email %> <span style="color: #8A8791;">(primary)</span>
+      </div>
+
+      <div class="boxy p-15 lh-20 mb-15 hide">    
+        <h2>Google Authenticator</h2>
+        <% if @current_user.mfa_secret %>
+          <p>Google authenticator is currently enabled.</p>
+          <a href="<%= disable_mfa_panel_account_path %>" class="button radius secondary">Disable 2FA</a>
+        <% else %>
+          <p>Enable google authenticator (2FA) on your iPhone or Android device for added security.</p>
+          <a href="<%= enable_mfa_panel_account_path %>" class="button radius secondary mb-0">Enable 2FA</a>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="change_password" class="reveal-modal small" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
+  <h1>Change Your Password</h1>
+  <%= form_for @current_user, url: :panel_account do |f| %>
+    <h2>Current Password</h2>
+    <%= f.password_field :password_current, placeholder: 'enter your current password', autocomplete: 'off' %>
+    <h2>New Password</h2>
+    <%= f.password_field :password, placeholder: 'enter your new password', autocomplete: 'off' %>
+    <h2>Retype Your New Password</h2>
+    <%= f.password_field :password_confirmation, placeholder: 'retype your password', autocomplete: 'off' %>
+    <%= f.submit :submit, value: 'Change', class: 'button radius excite mb-0' %>
+  <% end %>
+</div>

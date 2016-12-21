@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <%= favicon_link_tag 'favicon.ico' %>
+    <title><%= @page_title || '101DX' %></title>
+    <%= render 'shared/css' %>
+  </head>
+  <body>
+    <div class="fullpage">
+      <header class="pt-40 pb-30">
+        <div class="row">
+          <div class="logo columns small-12 text-center">
+            <%= image_tag 'logos/101dx_color.png' %>
+          </div>
+        </div>
+      </header>
+      <%= yield %>
+    </div>
+    <%= render 'shared/js' %>
+  </body>
+</html>

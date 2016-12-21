@@ -1,0 +1,23 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_wallet_path %>">Transfer</a></li>
+      <li><a href="<%= panel_wallet_addresses_path %>">Deposit</a></li>
+      <li><a href="<%= edit_panel_wallet_address_path @address %>" class="active">Edit Address Label</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Edit Your Deposit Address Label</h1>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15">
+        <%= render 'form' %>
+      </div>
+    </div>
+  </div>
+</section>

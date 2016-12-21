@@ -1,0 +1,52 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_wallet_path %>" class="active">Transfer</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-6">
+      <h1>Transfers</h1>
+    </div>
+    <div class="columns small-6 text-right">
+      <a href="<%= panel_wallet_addresses_path %>" class="button radius secondary f-14 mb-0">Deposit</a>
+      <a href="<%= withdraw_panel_wallet_path %>" class="button radius secondary f-14 mb-0 ml-5">Withdraw</a>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15 mb-15">
+        <h2>Transaction History</h2>
+        <% transactions = (@deposits + @withdraws).sort_by{|t| t.created_at}.reverse %>
+        <table class="mb-0" style="width: 100%;">
+          <thead>
+            <th class="f-12">Date</th>
+            <th class="f-12">Type</th>
+            <th class="f-12">Amount</th>
+            <th class="f-12">Fee</th>
+            <th class="f-12">Address</th>
+            <th class="f-12">Status</th>
+            <th class="f-12"></th>
+          </thead>
+          <tbody>
+            <% if transactions.blank? %>
+              <tr>
+                <td class="f-11" colspan="7">You have no transactions.</td>
+              </tr>
+            <% else %>
+              <% transactions.each do |t| %>
+                <% if t.class.name == 'CryptoDeposit' %>
+                  <%= render 'deposit_item', deposit: t, show_type: true, show_actions: true %>
+                <% else %>
+                  <%= render 'withdraw_item', withdraw: t, show_type: true, show_actions: true %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

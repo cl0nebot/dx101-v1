@@ -1,0 +1,50 @@
+<table class="mb-0" style="width: 100%;">
+  <thead>
+    <tr>
+      <th class="f-12">Transfer Type</th>
+      <th class="f-12">Trade Type</th>
+      <th class="f-12">Quantity</th>
+      <th class="f-12">Quantity Filled</th>
+      <th class="f-12">Status</th>
+      <th class="f-12">Created</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% if trades.blank? %>
+      <tr>
+        <td class="f-11" colspan="6">You have no trades.</td>
+      </tr>
+    <% else %>
+      <% trades.each do |t| %>
+        <tr>
+          <td class="f-11"><%= t.transfer_type.to_s.capitalize %></td>
+          <td class="f-11">
+            <% if t.stop_like? %>
+              Stop @ <%= t.rate_currency %> <%= t.stop_rate %><br>
+            <% end %>
+            <% if t.lmt_like? %>
+              Limit @ <%= t.rate_currency %> <%= t.rate %>
+            <% end %>
+            <% unless t.stop_like? or t.lmt_like? %>
+              <%= t.trade_type_for_display %>
+            <% end %>
+          </td>
+          <td class="f-11"><%= t.quantity_currency %> <%= t.quantity %></td>
+          <td class="f-11"><%= t.quantity_currency %> <%= t.quantity_filled %></td>
+          <td class="f-11"><%= t.status_for_display %></td>
+          <td class="f-11"><%= timeago t.created_at %></td>
+          <td class="f-11 text-right">
+            <% if t.pending? or t.pending_funds? or t.processing? %>
+              <a href="<%= cancel_panel_trade_path t %>" confirm="Are you sure?">Cancel</a> <span class="ml-10 mr-10">|</span>
+            <% end %>
+            <% if t.canceled? or t.pending_funds? %>
+              <a href="<%= activate_panel_trade_path t %>" confirm="Are you sure?">Activate</a> <span class="ml-10 mr-10">|</span>
+            <% end %>
+            <a href="<%= panel_trade_path t %>">Details</a>
+          </td>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

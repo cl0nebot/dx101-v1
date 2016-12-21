@@ -1,0 +1,23 @@
+<div class="row collapse">
+  <div class="columns small-11 medium-8 box small-centered">
+    <header class="smooth-header round-top-5">
+      <div class="row">
+        <div class="columns small-12">
+          <h1 class="smooth-h1">Reset Your Password</h1>
+        </div>
+      </div>
+    </header>
+    <section>
+      <%= simple_flash %>
+      <div class="row pt-15">
+        <div class="columns small-12">
+          <%= form_for @current_user, url: :reset do |f| %>
+            <%= f.password_field :password, placeholder: 'enter your new password', autocomplete: 'off' %>
+            <%= f.password_field :password_confirmation, placeholder: 'retype your new password', autocomplete: 'off' %>
+            <%= f.submit :submit, value: 'Reset', class: 'button radius' %>
+          <% end %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

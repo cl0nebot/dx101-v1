@@ -1,0 +1,68 @@
+<header class="pt-20">
+  <div class="row">
+    <ul class="breadcrumb">
+      <li><a href="<%= panel_wallet_path %>">Transfer</a></li>
+      <li><a href="<%= panel_wallet_addresses_path %>" class="active">Deposit</a></li>
+    </ul>
+  </div>
+  <div class="row">
+    <div class="columns small-12">
+      <h1>Deposit Addresses</h1>
+    </div>
+  </div>
+</header>
+<section class="pb-20">
+  <div class="row">
+    <div class="columns small-12">
+      <div class="boxy p-15">
+        <%= form_tag :panel_wallet_addresses, method: :get do %>
+          <div class="row">
+            <div class="columns small-2 large-1 pt-8">
+              <%= label_tag :crypto_type, 'Showing:' %>
+            </div>
+            <div class="columns small-7 medium-4 large-2">
+              <%= select_tag :crypto_type, options_for_crypto_types(@crypto_type) %>
+            </div>
+            <div class="columns small-3 end">
+              <%= submit_tag 'GO', class: 'button radius secondary tiny mb-0' %>
+            </div>
+          </div>
+        <% end %>
+        <% if @addresses.blank? %>
+          <p class="pb-15">You have no wallet addresses<% if @crypto_type %> for <%= Finance.crypto_name_by_currency(@crypto_type) %><% end %>. <a href="<%= new_panel_wallet_address_path crypto_type: @crypto_type %>">Create New Address</a></p>
+        <% else %>
+          <table style="width: 100%;">
+            <thead>
+              <tr>
+                <% if @crypto_type.blank? %><th class="f-12">Type</th><% end %>
+                <th class="f-12">Label</th>
+                <th class="f-12">Address</th>
+                <th class="f-12">Created</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @addresses.each do |a| %>
+                <tr>
+                  <% if @crypto_type.blank? %><td class="f-11"><%= Finance.crypto_name_by_currency(a.currency) %></td><% end %>
+                  <td class="f-11"><%= a.label %></td>
+                  <td class="f-11"><a href="<%= panel_wallet_address_path a %>"><%= a.address %></a></td>
+                  <td class="f-11"><%= timeago a.created_at %></td>
+                  <td class="f-11"><a href="<%= hide_panel_wallet_address_path a %>" confirm="Are you sure?">Hide</a></td>
+                </tr>
+              <% end %>
+            </tbody>
+            <tfooter>
+              <tr>
+                <td colspan="5" class="text-right" style="border-top: 1px solid #F5F5F5;">
+                  <a href="<%= new_panel_wallet_address_path crypto_type: @crypto_type %>" class="button radius secondary f-14 mb-0"><i class="fa fa-plus mr-5"></i>Create New Address</a>
+                </td>
+              </tr>
+            </tfooter>
+          </table>
+          <%= will_paginate @addresses %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</section>

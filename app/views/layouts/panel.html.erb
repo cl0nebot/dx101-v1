@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <%= favicon_link_tag 'favicon.ico' %>
+    <title><%= @page_title || '101DX' %></title>
+    <%= render 'shared/css' %>
+  </head>
+  <body>
+  <!--
+  <div class="off-canvas-wrap">
+    <div class="inner-wrap">
+
+      <aside class="right-off-canvas-menu white-links f-16 dts-25">
+        <nav class="blocky-nav">
+          <a href="<%= panel_account_path %>"><span class="icon-spacer-25"><i class="fa fa-user"></i></span>My Account</a>
+          <a href="<%= panel_wallet_path %>"><span class="icon-spacer-25 mr-5"><i class="fa fa-btc"></i></span>My Wallet</a>
+          <a href="<%= panel_trades_path %>"><span class="icon-spacer-25 mr-5"><i class="fa fa-bar-chart-o"></i></span>Trade</a>
+          <% if @current_user.admin? %><li><a href="<%= admin_dashboard_path %>"><span class="icon-spacer-25"><i class="fa fa-dashboard"></i></span>Admin Dashboard</a><% end %>
+          <a href="<%= logout_path %>"><span class="icon-spacer-25"><i class="fa fa-sign-out"></i></span>Logout</a>
+        </nav>
+      </aside>
+      -->
+      <header class="dark-strip ui-layout-north p-0">
+        <a href="<%= root_path %>" class="inline-block m-10"><%= image_tag 'logos/101dx_icon_white.png', style: 'height: 36px;' %></a><nav class="navy"><a href="<%= panel_dashboard_path %>" data-dropdown="trade_drop" class="dropdown button white-link f-14 p-0 mb-0 <%= 'active' if params[:controller] == 'panel/trades' %>">Trade</a><a href="<%= panel_wallet_path %>" data-dropdown="transfer_drop" class="dropdown button white-link f-14 p-0 mb-0 <%= 'active' if params[:controller].match('panel/wallet') or params[:controller].match('panel/crypto_addresses') %>">Transfer</a></nav>
+        <ul id="trade_drop" data-dropdown-content class="f-dropdown round-bottom-3 text-left">
+          <li><a href="<%= panel_trades_path %>">Control Center</a></li>
+          <li><a href="<%= history_panel_trades_path %>">History</a></li>
+        </ul>
+        <ul id="transfer_drop" data-dropdown-content class="f-dropdown round-bottom-3 text-left">
+          <li><a href="<%= panel_wallet_addresses_path %>">Deposit</a></li>
+          <li><a href="<%= withdraw_panel_wallet_path %>">Withdraw</a></li>
+          <li><a href="<%= panel_wallet_path %>">History</a></li>
+        </ul>
+
+        <a href="<%= panel_account_path %>" data-dropdown="account_drop" class="dropdown white-link f-14 right m-0 mr-3 mt-3 button mirage radius text-left" style="min-width: 200px;">
+          <i class="fa fa-user f-18 mr-5"></i><%= @current_user.first_name %>
+        </a>
+        <ul id="account_drop" data-dropdown-content class="f-dropdown round-bottom-3 text-left">
+          <li><a href="<%= panel_account_path %>"><span class="icon-spacer-25"><i class="fa fa-user"></i></span>Account</a></li>
+          <% if @current_user.admin? %><li><a href="<%= admin_dashboard_path %>"><span class="icon-spacer-25"><i class="fa fa-dashboard"></i></span>Admin Dashboard</a></li><% end %>
+          <li><a href="<%= logout_path %>"><span class="icon-spacer-25"><i class="fa fa-sign-out"></i></span>Logout</a></li>
+        </ul>
+      </header>
+      <!--
+          <div class="row hide-for-large-up">
+            <div class="columns small-12 white-links f-25 pt-10 text-right">
+              <a href="#" class="right-off-canvas-toggle"><i class="fa fa-bars"></i></a>
+            </div>
+          </div>
+    </div>
+  </div>
+          -->
+    
+        <% unless flash.blank? %>
+          <section>
+            <div class="row pt-15">
+              <div class="columns small-12">
+                <% if flash[:error] %>
+                  <div data-alert class="alert-box error f-15 radius">
+                    <%= flash[:error] %> <a href="#" class="close">&times;</a>
+                  </div>
+                <% end %>
+                <% if flash[:success] %>
+                  <div data-alert class="alert-box success f-15 radius">
+                    <%= flash[:success] %> <a href="#" class="close">&times;</a>
+                  </div>
+                <% end %>
+                <% if flash[:warn] %>
+                  <div data-alert class="alert-box warning f-15 radius">
+                    <%= flash[:warn] %> <a href="#" class="close">&times;</a>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </section>
+        <% end %>
+        <%= yield %>
+        <!--
+        <a class="exit-off-canvas"></a>
+      </div>
+    </div>
+    -->
+    <div id="timeout" class="reveal-modal small" data-reveal>
+      <h1>Your session has timed out.</h1>
+      <p>You have been inactive for too long. Please login again.</p>
+      <a href="<%= login_path %>" class="button radius excite">OK</a>
+    </div>
+    <div id="timeout_warning" class="reveal-modal small" data-reveal>
+      <h1>Are you there?</h1>
+      <p>You have been inactive for too long, click OK to continue your session.</p>
+      <a href="<%= ping_panel_dashboard_path %>" class="button radius excite button-ping">OK</a>
+    </div>
+    <%= render 'shared/js' %>
+    <%= javascript_include_tag 'panel/index' %>
+  </body>
+</html>

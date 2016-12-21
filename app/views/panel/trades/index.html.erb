@@ -1,0 +1,439 @@
+<% 
+  md = @market_data[@rate_currency.to_sym][@quantity_currency.to_sym] 
+%>
+<% content_for :js do %>
+  <%= javascript_include_tag 'panel/trades/index' %>
+  <script type="text/json" id="chart_data" quantity_currency="<%= @quantity_currency.to_s.upcase %>" rate_currency="<%= @rate_currency.to_s.upcase %>">
+  <%= raw md[:chart].map{|d| [d[:date].to_f * 1000, (d[:open] ? d[:open].round.to_f : nil), (d[:high] ? d[:high].round.to_f : nil), (d[:low] ? d[:low].round.to_f : nil), (d[:close] ? d[:close].round.to_f : nil), (d[:volume] ? d[:volume].round.to_f : 0)]}.to_json %>
+  </script>
+  <script type="text/json" id="last_price_data">
+    <% 
+      data = {}
+      @market_data.each do |rate_currency, v|
+        v.each do |quantity_currency, d|
+          data["#{quantity_currency}/#{rate_currency}"] = d[:last] ? d[:last].round.to_f : nil
+        end
+      end
+    %>
+    <%= raw data.to_json %>
+  </script>
+<% end %>
+
+<div class="ui-layout-west plain-strip p-0">
+  <header class="light-fade-strip p-10 big-blue strong text-center f-14">Markets <a href="#" class="ml-5" data-reveal data-reveal-id="crypto_markets_filter"><i class="fa fa-filter" data-tooltip title="Crypto markets filter"></i></a></header>
+  <div class="ui-layout-content p-0">
+    <div class="accordion markets-accordion">
+      <% (Finance.crypto_currencies + [:pmu]).each do |c| %>
+        <% if (@market_currencies + [:pmu]).include? c %>
+          <div class="group <%= 'active' if c == @rate_currency.to_sym %>">
+            <h3><%= Finance.crypto_name_by_currency c %></h3>
+            <div>
+              <% (Finance.crypto_currencies + [:pmu]).each do |cc| %>
+                <% if c != cc and (@market_currencies + [:pmu]).include? cc %>
+                  <%
+                    d = @market_data[c][cc]
+                  %>
+                  <a href="<%= panel_trades_path quantity_currency: cc.to_s, rate_currency: c.to_s %>" class="white-strip plain block pt-14 pb-15 mb-3 f-11 tip-right" data-tooltip title="24 Hour Volume - <%= cc.to_s.upcase %> <%= d[:volume].round %>">
+                    <div class="row">
+                      <div class="columns small-4"><i class="fa <%= (@quantity_currency == cc.to_s and @rate_currency == c.to_s) ? 'fa-eye' : 'fa-eye-slash' %> mr-10" style="<%= 'opacity: .25' unless @quantity_currency == cc.to_s and @rate_currency == c.to_s %>"></i><%= cc.to_s.upcase %></div>
+                      <div class="columns small-5"><% if d[:last] and d[:last] > 0 %><%= d[:last].round %><% else %>n/a<% end %></div>
+                      <div class="columns small-3"><span class="<%= 'positive' if d[:change] and d[:change] > 0 %><%= 'negative' if d[:change] and d[:change] < 0 %>"><%= '+' if d[:change] and d[:change] > 0 %><%= number_with_precision(d[:change].to_f.round, precision: 2) %>%</span></div>
+                    </div>
+                  </a>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+<div class="ui-layout-center p-0">
+  <header class="light-fade-strip p-10 big-blue strong text-center f-14">Main</header>
+  <div class="ui-layout-content mb-0 p-0">
+    <h3 class="medium-strip f-12 bold whitey m-0 p-15">My open trades for <%= @quantity_currency.to_s.upcase %>/<%= @rate_currency.to_s.upcase %> <span style="opacity: .5">(<%= Finance.crypto_name_by_currency @quantity_currency %>/<%= Finance.crypto_name_by_currency @rate_currency %>)</span></h3>
+    <% if @open_trades.blank? %>
+      <p class="mb-0 p-15 f-11">You currently have no open trades for <%= @quantity_currency.to_s.upcase %>/<%= @rate_currency.to_s.upcase %>.</p>
+    <% else %>
+      <%= render 'list', trades: @open_trades %>
+    <% end %>
+    <h3 class="medium-strip f-12 bold whitey m-0 p-15">Market data for <%= @quantity_currency.to_s.upcase %>/<%= @rate_currency.to_s.upcase %> <span style="opacity: .5">(<%= Finance.crypto_name_by_currency @quantity_currency %>/<%= Finance.crypto_name_by_currency @rate_currency %>)</span></h3>
+    <div class="row row-fluid text-center pt-15 f-14">
+      <div class="columns small-12 lh-24">
+        <span class="left pr-15 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+          LAST PRICE<br>
+          <strong><% if md[:last] %><%= @rate_currency.to_s.upcase %> <%= md[:last].round %><% else %>N/A<% end %></strong><br>
+        </span>
+        <span class="left pl-15 pr-15 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+          24 HR HIGH<br>
+          <strong><% if md[:high] %><%= @rate_currency.to_s.upcase %> <%= md[:high].round %><% else %>N/A<% end %></strong><br>
+        </span>
+        <span class="left pl-15 pr-15 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+          24 HR LOW<br>
+          <strong><% if md[:low] %><%= @rate_currency.to_s.upcase %> <%= md[:low].round %><% else %>N/A<% end %></strong><br>
+        </span>
+        <span class="left pl-15 pr-15 pt-3 pb-3" style="border-right: 1px solid #F2F2F2;">
+          24 HR VOLUME<br>
+          <strong><%= @quantity_currency.to_s.upcase %> <%= md[:volume].round %></strong><br>
+        </span>
+        <span class="left pl-15">
+          <a href="#" class="button radius excite mb-0 f-14" data-reveal data-reveal-id="new_trade_dialog">New Trade</a>
+        </span>
+      </div>
+    </div>
+    <div class="row row-fluid text-center pt-15 pb-15">
+      <div class="columns small-12">
+        <div id="chart"></div>
+      </div>
+    </div>
+    <div class="row row-fluid">
+      <div class="columns small-6">
+        <h2 class="f-14">Bids</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @bids.blank? %>
+            <tr>
+              <td class="f-11" colspan="2">No bids</td>
+            </tr>
+          <% else %>
+            <% @bids.each do |b| %>
+              <% 
+                total = b.rate * b.quantity_required.amount
+              %>
+              <tr>
+                <td class="f-11"><%= b.rate.round.format %></td>
+                <td class="f-11"><%= b.quantity_required.round.format %></td>
+                <td class="f-11"><%= total.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="columns small-6">
+        <h2 class="f-14">Asks</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @asks.blank? %>
+            <tr>
+              <td class="f-11" colspan="2">No asks</td>
+            </tr>
+          <% else %>
+            <% @asks.each do |a| %>
+              <% 
+                total = a.rate * a.quantity_required.amount
+              %>
+              <tr>
+                <td class="f-11"><%= a.rate.round.format %></td>
+                <td class="f-11"><%= a.quantity_required.round.format %></td>
+                <td class="f-11"><%= total.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row row-fluid">
+      <div class="columns small-12">
+        <h2 class="f-14">Trade History</h2>
+        <table style="width: 100%;">
+          <thead>
+            <tr>
+              <th class="f-12">When</th>
+              <th class="f-12">Price (<%= @rate_currency.to_s.upcase %>)</th>
+              <th class="f-12">Quantity</th>
+              <th class="f-12">Total (<%= @rate_currency.to_s.upcase %>)</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% if @trades.blank? %>
+            <tr>
+              <td class="f-11" colspan="3">No trades</td>
+            </tr>
+          <% else %>
+            <% @trades.each do |t| %>
+              <tr>
+                <td class="f-11"><%= timeago t.created_at %></td>
+                <td class="f-11"><%= t.rate.round.format %></td>
+                <td class="f-11"><%= t.quantity.round.format %></td>
+                <td class="f-11"><%= t.price.round.format %></td>
+              </tr>
+            <% end %>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="ui-layout-east plain-strip p-0">
+  <header class="light-fade-strip p-10 big-blue strong text-center f-14"><a href="#" class="mr-5" data-reveal data-reveal-id="crypto_accounts_filter"><i class="fa fa-filter" data-tooltip title="Crypto accounts filter"></i></a> Balances</header>
+  <div class="ui-layout-content p-0">
+    <div class="accordion">
+      <div class="group">
+        <h3>Fiat Accounts</h3>
+        <div>
+          <% Finance.fiat_currencies.each do |c| %>
+            <a href="#" class="white-strip plain block pt-15 pb-15 mb-3 f-11">
+              <div class="row">
+                <div class="columns small-12"><%= @balance[c].round.format %></div>
+              </div>
+            </a>
+          <% end %>
+        </div>
+      </div>
+      <div class="group">
+        <h3>Crypto Accounts</h3>
+        <div>
+          <% Finance.crypto_currencies.each do |c| %>
+            <% if @balance_currencies.include? c or @balance[c] > 0 %>
+              <a href="#" class="white-strip plain block pt-15 pb-15 mb-3 f-11">
+                <div class="row">
+                  <div class="columns small-2"><%= c.to_s.upcase %></div>
+                  <div class="columns small-10"><%= @balance[c].round.format %></div>
+                </div>
+              </a>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="group">
+        <h3>Membership Units</h3>
+        <div>
+          <a href="#" class="white-strip plain block pt-15 pb-15 mb-3 f-11" data-reveal data-reveal-id="membership_dialog">
+            <div class="row">
+              <div class="columns small-12"><i class="fa fa-share fa-flip-horizontal mr-10"></i> PMU <%= @balance[:pmu].format %></div>
+            </div>
+          </a>
+          <% unless @pmus_can_be_bought %>
+            <a href="#" class="white-strip plain block pt-15 pb-15 mb-3 f-11" data-reveal data-reveal-id="membership_dialog">
+              <div class="row">
+                <div class="columns small-12"><i class="fa fa-share fa-flip-horizontal mr-10"></i> SMU <%= @balance[:smu].format %></div>
+              </div>
+            </a>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="boxy white-strip m-10 p-10">
+    <div class="pb-5 mb-5" style="border-bottom: 1px solid #F2F2F2;"><strong><span class="f-12">Your Trade Discount:</span> <span class="f-14 negative"><%= @current_user.trading_discount %>%</span></strong></div>
+    <% 
+      mu_currency = @pmus_can_be_bought ? 'pMUs' : 'sMUs'
+      case @current_user.trading_fee 
+    %>
+    <% when BigDecimal.new('.002') %>
+      <p <% if mu_currency == 'sMUs' and @balance[:smu] >= Money.new(25000, :smu) %>class="mb-0 f-14"<% end %>>You are receiving the maximum discount. Thanks for your support.</p>
+    <% when BigDecimal.new('.0025') %>
+      <p class="f-14">Save an additional 10% with the purchase of 150 <%= mu_currency %>.</p>
+    <% when BigDecimal.new('.003') %>
+      <p class="f-14">Save an additional 10% with the purchase of 50 <%= mu_currency %>.</p>
+    <% when BigDecimal.new('.004') %>
+      <p class="f-14">Save an additional 20% with the purchase of 45 <%= mu_currency %>.</p>
+    <% when BigDecimal.new('.005') %>
+      <p class="f-14">Purchase Membership Units and save up to 60%</p>
+    <% end %>
+    <% unless mu_currency == 'sMUs' and @balance[:smu] >= Money.new(25000, :smu) %><a href="#" class="button radius excite mb-0 f-14" style="width: 100%;" data-reveal data-reveal-id="membership_dialog">Learn More</a><% end %>
+  </div>
+</div>
+<div id="crypto_accounts_filter" class="reveal-modal tiny" data-reveal>
+  <div class="row">
+    <div class="columns small-12">
+      <h2>Which crypto account balances would you like to see?</h2>
+    </div>
+  </div>
+  <%= form_tag '/panel/trades/filters.json', id: 'balance_currencies_form' do %>
+    <div style="height: 300px; overflow-y: auto;" class="p-15 mb-15">
+      <% Finance.crypto_currencies.sort.each do |c| %>
+        <div class="row mb-10 border-down collapse">
+            <div class="columns small-12"><input type="checkbox" name="<%= c.to_s %>" <%= 'checked' if @balance_currencies.include? c %>><label for="<%= c.to_s %>"><%= c.to_s.upcase %> - <%= Finance.crypto_name_by_currency c %></label></div>
+        </div>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="columns small-12">
+      <%= submit_tag 'Save', class: 'button excite radius mb-0 balance_currencies_submit' %>
+      </div>
+    </div>
+  <% end %>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="crypto_markets_filter" class="reveal-modal tiny" data-reveal>
+  <div class="row">
+    <div class="columns small-12">
+      <h2>Which crypto markets would you like to see?</h2>
+    </div>
+  </div>
+  <%= form_tag '/panel/trades/filters.json', id: 'market_currencies_form' do %>
+    <div style="height: 300px; overflow-y: auto;" class="p-15 mb-15">
+      <% Finance.crypto_currencies.sort.each do |c| %>
+        <div class="row mb-10 border-down collapse">
+          <div class="columns small-12"><input type="checkbox" name="<%= c.to_s %>" <%= 'checked' if @market_currencies.include? c %>><label for="<%= c.to_s %>"><%= c.to_s.upcase %> - <%= Finance.crypto_name_by_currency c %></label></div>
+        </div>
+      <% end %>
+    </div>
+    <div class="row">
+      <div class="columns small-12">
+      <%= submit_tag 'Save', class: 'button excite radius mb-0 market_currencies_submit' %>
+      </div>
+    </div>
+  <% end %>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="membership_dialog" class="reveal-modal medium" data-reveal>
+  <div class="row">
+    <div class="columns small-6">
+      <h3>Buy Membership Units</h3>
+      <h2>Currently Selling Preferred Membership Units</h2>
+      <%= form_tag '/panel/trades/units.json', id: 'unit_form', currency: (@pmus_can_be_bought ? 'PMU' : 'SMU') do %>
+        <%= select_tag :amount, options_for_select([
+          ["5 #{mu_currency} - 20% Discount - 0.05 XBT Total", 5],
+          ["50 #{mu_currency} - 40% Discount - 0.5 XBT Total", 50],
+          ["100 #{mu_currency} - 50% Discount - 1 XBT Total", 100],
+          ["250 #{mu_currency} - 60% Discount - 2.5 XBT Total", 250],
+          ["Other", nil],
+        ]) %>
+        <div class="hide other_amount"><%= number_field_tag :other_amount, nil, placeholder: 'enter other amount' %></div>
+        <p style="color: red;">Clicking "Buy" will remove <strong>XBT <span class="mu_cost">0.05000000</span></strong> from your Bitcoin balance and complete your purchase.</p>
+        <%= submit_tag 'Buy', class: 'button excite radius unit_form_submit' %>
+      <% end %>
+    </div>
+    <div class="columns small-6">
+      <div style="height: 300px; overflow-y: auto; background-color: #F2F2F2; border: 1px solid #CCCCCC;" class="mt-35 p-10"><%= render "pages/memberblurb" %></div>
+    </div>
+  </div>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="new_trade_dialog" class="reveal-modal medium" data-reveal>
+  <a class="close-reveal-modal">&#215;</a>
+  <div class="new_trade_step new_trade_step-1">
+    <h2 class="mb-10">Submit your new trade below.</h2>
+    <%= form_for :trade, url: panel_trades_path do |f| %>
+      <div class="row row-fluid">
+        <div class="left"><a href="#" class="button round-left-5 pt-9 pb-8 buy" id="transfer_type_button" style="width: 150px;"><span class="show_for_buy hide">Buy</span><span class="show_for_sell hide">Sell</span><i class="fa fa-sort ml-20"></i></a></div>
+        <div class="left">
+          <a href="#" data-dropdown="trade_currency" id="trade_currency_button" class="button dropdown secondary pt-9 pb-8" style="width: 150px;"><%= @quantity_currency.to_s.upcase %></a>
+          <ul id="trade_currency" data-dropdown-content class="f-dropdown">
+            <% (Finance.crypto_currencies + [:pmu]).each do |c| %>
+              <% if (@market_currencies + [:pmu]).include? c %>
+                <li<%= raw(' class="active-item"') if @quantity_currency == c.to_s %>><a href="#<%= c.to_s.upcase %>"><%= c.to_s.upcase %></a></li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+        <div class="left black-strip pt-11 pb-11 text-center whitey buy" style="width: 100px;" id="transfer_type_reaction">
+          <span class="show_for_buy hide">WITH</span>
+          <span class="show_for_sell hide">FOR</span>
+        </div>
+        <div class="left">
+          <a href="#" data-dropdown="trade_rate_currency" id="trade_rate_currency_button" class="button dropdown secondary round-right-5 pt-9 pb-8" style="width: 150px;"><%= @rate_currency.to_s.upcase %></a>
+          <ul id="trade_rate_currency" data-dropdown-content class="f-dropdown">
+            <% (Finance.crypto_currencies + [:pmu]).each do |c| %>
+              <% if (@market_currencies + [:pmu]).include? c %>
+                <li<%= raw(' class="active-item"') if @rate_currency == c.to_s %>><a href="#<%= c.to_s.upcase %>"><%= c.to_s.upcase %></a></li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+      <div class="row row-fluid">
+        <div class="left"><span class="prefix radius pl-30 pr-30 buy" style="width: 150px;">Quantity</div>
+        <div class="left"><%= f.text_field :quantity, placeholder: 'enter amount', autocomplete: 'off', style: 'width: 200px;' %></div>
+      </div>
+      <div class="row row-fluid">
+        <div class="left"><span class="prefix radius pl-30 pr-30" style="width: 150px;">Type</span></div>
+        <div class="left">
+          <a href="#" data-dropdown="trade_type" id="trade_type_button" class="button dropdown secondary round-right-5 pt-9 pb-8">Market</a>
+          <ul id="trade_type" data-dropdown-content class="f-dropdown">
+            <li><a href="#Market">Market</a></li>
+            <li><a href="#Limit">Limit</a></li>
+            <li><a href="#Stop">Stop</a></li>
+            <li><a href="#Stop Limit">Stop Limit</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="row row-fluid hide" id="limit">
+        <div class="left"><span class="prefix radius pl-30 pr-30" style="width: 150px;">Limit At</span></div>
+        <div class="left">
+          <%= f.text_field :lmt_amount, placeholder: 'enter amount', autocomplete: 'off', style: 'width: 200px;' %>
+        </div>
+        <div class="left"><span class="postfix radius pl-30 pr-30 trade_currency_text" style="width: 150px;"><%= @rate_currency.to_s.upcase %></span></div>
+      </div>
+      <div class="row row-fluid hide" id="stop">
+        <div class="left"><span class="prefix radius pl-30 pr-30" style="width: 150px;">Stop At</span></div>
+        <div class="left">
+          <%= f.text_field :stop_amount, placeholder: 'enter amount', autocomplete: 'off', style: 'width: 200px;' %>
+        </div>
+        <div class="left"><span class="postfix radius pl-30 pr-30 trade_currency_text" style="width: 150px;"><%= @rate_currency.to_s.upcase %></span></div>
+      </div>
+      <div class="row row-fluid">
+        <div class="boxy p-10 left mb-20 pb-0">
+          <%= f.check_box :fok %>
+          <%= f.label :fok, 'FOK', style: 'margin-right: .25rem;' %>
+          <i class="fa fa-question-circle pointer f-18 has-tip mr-30" data-tooltip title="Fill or Kill - Upon execution this trade will immediately be filled in whole or canceled."></i>
+          <%= f.check_box :ioc %>
+          <%= f.label :ioc, 'IOC', style: 'margin-right: .25rem;' %>
+          <i class="fa fa-question-circle pointer f-18 has-tip" data-tooltip title="Immediate or Cancel - Upon execution this trade will immediately be filled in part or whole and then canceled (or completed)."></i>
+        </div>
+      </div>
+      <%= f.submit 'Submit', class: 'button radius excite' %>
+    <% end %>
+  </div>
+  <div class="new_trade_step new_trade_step-2"></div>
+</div>
+<script type="text/html" id="confirmation_template">
+  <div class="row">
+    <div class="columns small-12 medium-8 large-6">
+      <h2>Confirm Your Trade</h2>
+      <div class="pb-15">
+        <dl>
+          <dt class="small-4 left">Transfer Type</dt>
+          <dd class="small-8 left">{{=_.capitalize(transfer_type)}}</dd>
+          <dt class="small-4 left">Trade Type</dt>
+          <dd class="small-8 left">{{=trade_type}}</dd>
+          <dt class="small-4 left">Quantity</dt>
+          <dd class="small-8 left">{{=currency}} {{=quantity}}</dd>
+          {{ if(trade_type == 'Limit' || trade_type == 'Stop Limit'){ }}
+            <dt class="small-4 left">Limit Amount</dt>
+            <dd class="small-8 left">{{=rate_currency}} {{=lmt_amount}}</dd>
+          {{ } }}
+          {{ if(trade_type == 'Stop' || trade_type == 'Stop Limit'){ }}
+            <dt class="small-4 left">Stop Amount</dt>
+            <dd class="small-8 left">{{=rate_currency}} {{=stop_amount}}</dd>
+          {{ } }}
+          <dt class="small-4 left">Fee</dt>
+          <dd class="small-8 left"><strong class="excite-text">Free</strong> during beta.<dd>
+        </dl>
+        {{ if(!!fok){ }}
+          <p class="pt-15">This is an FOK trade.</p>
+        {{ } }}
+        {{ if(!!ioc){ }}
+          <p class="pt-15">This is an IOC trade.</p>
+        {{ } }}
+        {{ if(!!last_price && (trade_type == 'Limit' || trade_type == 'Stop Limit')){ }}
+          {{ if(price_diff.greaterThanOrEqualTo(20) || price_diff.lessThanOrEqualTo(-20)){ }}
+            <p class="pt-30 excite-text bold">This trades price is a change of {{=price_diff.absoluteValue().round().toString()}}% from the current market price, please be sure that you meant to do this before confirming.</p>
+          {{ } }}
+        {{ } }}
+      </div>
+      <a href="#" class="button radius secondary confirm_cancel">Cancel</a>
+      <a href="#" class="button radius excite confirm">Confirm</a>
+    </div>
+  </div>
+</script>

@@ -1,0 +1,21 @@
+development:
+  adapter: mysql2
+  encoding: utf8
+  host: localhost
+  database: 101_dev
+  socket:
+  pool: 5
+  host: localhost
+  username: 101_dev
+  password:
+
+test:
+  adapter: mysql2
+  encoding: utf8
+  host: localhost
+  database: 101_test
+  socket:
+  pool: 5
+  host: localhost
+  username: 101_test
+  password:

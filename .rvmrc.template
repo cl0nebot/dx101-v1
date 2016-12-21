@@ -1,0 +1,4 @@
+rvm --create use 2.1.2@101
+# may need to source one of your rc's when entering rvm env
+# source "$HOME/.zshrc"
+alias dev="foreman start"

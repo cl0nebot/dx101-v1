@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <%= favicon_link_tag 'favicon.ico' %>
+    <title><%= @page_title || '101DX' %></title>
+    <%= render 'shared/css' %>
+  </head>
+  <body>
+    <header class="dark-strip ui-layout-north p-0">
+      <a href="<%= admin_dashboard_path %>" class="inline-block m-10"><%= image_tag 'logos/101dx_icon_white.png', style: 'height: 36px;' %></a>
+      <nav class="navy"><a href="<%= admin_users_path %>" class="white-link f-14">Users</a><a href="<%= admin_withdraws_path %>" class="white-link f-14">Withdraws</a><a href="<%= admin_finance_path %>" class="white-link f-14">Finance</a></nav>
+      <a href="<%= panel_account_path %>" data-dropdown="account_drop" class="dropdown white-link f-14 right m-0 mr-3 mt-3 button mirage radius text-left" style="min-width: 200px;">
+        <i class="fa fa-user f-18 mr-5"></i><%= @current_user.first_name %>
+      </a>
+      <ul id="account_drop" data-dropdown-content class="f-dropdown round-bottom-3 text-left">
+        <li><a href="<%= panel_account_path %>"><span class="icon-spacer-25"><i class="fa fa-user"></i></span>Account</a></li>
+        <li><a href="<%= panel_dashboard_path %>"><span class="icon-spacer-25"><i class="fa fa-dashboard"></i></span>Back To My Dashboard</a></li>
+        <li><a href="<%= logout_path %>"><span class="icon-spacer-25"><i class="fa fa-sign-out"></i></span>Logout</a></li>
+      </ul>
+    </header> 
+
+    <div class="p-30">
+      <%= simple_flash %>
+      <%= yield %>
+    </div>
+
+    <%= render 'shared/js' %>
+    <%#= javascript_include_tag 'admin' %>
+  </body>
+</html>

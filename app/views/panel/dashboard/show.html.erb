@@ -1,0 +1,79 @@
+<header class="pt-20">
+  <div class="row">
+    <div class="columns small-12">
+      <h3>Welcome to your dashboard, <%= @current_user.name %></h3>
+      <hr>
+    </div>
+  </div>
+</header>
+
+<div class="row">
+
+  <div class="large-3 medium-4 columns">
+    <div class="hide-for-small">
+        <div class="sidebar">
+          <nav>
+            <ul class="side-nav">
+              <li class="heading">Dashboard</li>
+              <li><a href="#">Balances</a></li>
+              <li class="divider"></li>
+              <li class="heading">Wallet</li>
+              <li><a href="#">Buy/Sell</a></li>
+              <li><a href="#" data-search="">Recurring Payments</a></li>
+              <li><a href="#" data-search="">My Account</a></li>
+              <li class="divider"></li>
+              <li class="header">Trading</li>
+            </ul>
+
+            <h5>Complete Your Profile</h5>
+            <div class="progress large-6"><span class="meter" style="width: 40%"></span></div>
+            <ul class="side-nav">
+              <li>Next Step: <a href="#" data-search="">Get Naked!</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="large-9 medium-8 columns">
+      <h3>My Balances</h3>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>XBT</th>
+            <th>LTC</th>
+            <TH>DOGE</TH>
+            <th>PPC</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Hot Wallet</th>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th>Cold Wallet</th>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <th>Total</th>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Wut? no coins?</h3>
+      <p>Add some now!</p>
+    </div>
+  </div>
+</div>
+
