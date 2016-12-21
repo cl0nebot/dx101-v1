@@ -1,33 +1,4 @@
-# When Upgrading Ruby #
+# 101 Digital Exchange - Version 1 #
 
-Don't forget to change the passenger path in /opt/nginx/conf
 
-# README #
-
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+Programming Example.  First version of Bitcoin Exchange prototype, supporting many-to-many altcoin transfer.
